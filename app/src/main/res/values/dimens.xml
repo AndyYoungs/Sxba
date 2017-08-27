@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="framgent_margin">10dp</dimen>
+    <dimen name="tv_title_color_margin">8dp</dimen>
+    <dimen name="item_taohua_margin">5dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>
