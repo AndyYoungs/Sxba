@@ -3,6 +3,11 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_photo">图片</string>
+    <string name="title_novel">小说</string>
+    <string name="title_video">视频</string>
+    <string name="jsoup_error_exception">目标网站连接异常</string>
+    <string name="jsoup_error_nosize">未搜索到数据</string>
+
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 </resources>

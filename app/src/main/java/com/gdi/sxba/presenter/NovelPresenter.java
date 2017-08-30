@@ -1,62 +1,60 @@
 package com.gdi.sxba.presenter;
 
-import android.util.Log;
-
 import com.gdi.sxba.contract.CrawlerCallback;
 import com.gdi.sxba.contract.UIContract;
-import com.gdi.sxba.model.sxba.SxbaModel;
-import com.gdi.sxba.model.bean.SxBean;
+import com.gdi.sxba.model.bean.NovelBean;
+import com.gdi.sxba.model.bean.PhotoBean;
+import com.gdi.sxba.model.sxba.NovelModel;
 
 /**
- * Created by gandi on 2017/8/19 0019.
+ * Created by gandi on 2017/8/28 0028.
  */
 
-public class SxPresenter implements UIContract.Presenter, CrawlerCallback<SxBean> {
+public class NovelPresenter implements UIContract.Presenter, CrawlerCallback<NovelBean>{
 
-    int page = 1;
-    SxbaModel sxbaModel;
     UIContract.View iView;
+    NovelModel novelModel;
     int type = -1;
+    int page = 1;
 
-    public SxPresenter(UIContract.View iView) {
+    public NovelPresenter(UIContract.View iView) {
         this.iView = iView;
     }
 
     public void setUrl(String url) {
-        sxbaModel = new SxbaModel();
-        sxbaModel.setUrl(url);
-        sxbaModel.setCallback(this);
+        novelModel = new NovelModel();
+        novelModel.setUrl(url);
+        novelModel.setCallback(this);
     }
 
     @Override
     public void onFristPage() {
         page = 1;
         type = UIContract.View.notifyFrist;
-        sxbaModel.startCrawler(page);
+        novelModel.startCrawler(page);
     }
 
     @Override
     public void onNextPage() {
         page++;
         type = UIContract.View.notifyNext;
-        sxbaModel.startCrawler(page);
+        novelModel.startCrawler(page);
     }
 
     @Override
     public void onAppointPage(int page) {
         this.page = page;
         type = UIContract.View.notifyAppoint;
-        sxbaModel.startCrawler(page);
+        novelModel.startCrawler(page);
     }
 
     @Override
-    public void onSuccess(SxBean result) {
+    public void onSuccess(NovelBean result) {
         iView.notifyDataSetChanged(type, result);
     }
 
     @Override
-    public void onError() {
-        Log.i("1111111111111111111", "onError: ");
-        iView.onError();
+    public void onError(int type) {
+        iView.onError(type);
     }
 }

@@ -4,29 +4,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.gdi.sxba.R;
-import com.gdi.sxba.model.sxba.SxbaModel;
+import com.gdi.sxba.model.sxba.PhotoModel;
 import com.gdi.sxba.view.fragment.BaseFragment;
 import com.gdi.sxba.view.fragment.NovelFragment;
-import com.gdi.sxba.view.fragment.SxbaFragment;
+import com.gdi.sxba.view.fragment.PhotoFragment;
 import com.gdi.sxba.view.fragment.VideoFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView tvTitle;
-    SxbaModel sxbaPhotoModel;
+    PhotoModel sxbaPhotoModel;
 
     private BaseFragment[] fragments;
     private int index;
     private int currentTabIndex;
-    SxbaFragment sxbaFragment;
+    PhotoFragment photoFragment;
     VideoFragment videoFragment;
     NovelFragment novelFragment;
 
@@ -42,9 +41,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.navigation_dashboard:
                     index = 1;
+                    tvTitle.setText(getResources().getString(R.string.title_video));
                     break;
                 case R.id.navigation_notifications:
                     index = 2;
+                    tvTitle.setText(getResources().getString(R.string.title_novel));
                     break;
             }
             if (currentTabIndex != index) {
@@ -75,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        sxbaFragment = new SxbaFragment();
+        photoFragment = new PhotoFragment();
         videoFragment = new VideoFragment();
         novelFragment = new NovelFragment();
-        fragments = new BaseFragment[]{ sxbaFragment,videoFragment, novelFragment};
+        fragments = new BaseFragment[]{ photoFragment,videoFragment, novelFragment};
         // add and show first fragment
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,sxbaFragment )
-                .add(R.id.fragment_container, videoFragment).hide(videoFragment).show(sxbaFragment)
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,photoFragment )
+                .add(R.id.fragment_container, videoFragment).hide(videoFragment).show(photoFragment)
                 .commit();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -18,7 +18,7 @@ public interface UIContract {
 
         void notifyDataSetChanged(int type, T result);
 
-        void onError();
+        void onError(int type);
 
         void smoothScrollToPosition(int postion);
     }

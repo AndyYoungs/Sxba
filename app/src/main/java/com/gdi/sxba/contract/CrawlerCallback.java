@@ -6,6 +6,9 @@ package com.gdi.sxba.contract;
 
 public interface CrawlerCallback<T> {
 
+    int ErrorException = 1;
+    int ErrorNoSize = 2;
+
     void onSuccess(T result);
-    void onError();
+    void onError(int type);
 }

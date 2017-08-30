@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gdi.sxba.view.activity.PhotoActivity">
+    tools:context="com.gdi.sxba.view.activity.NovelActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="@string/title_photo" />
+                android:text="@string/title_novel" />
         </android.support.v7.widget.Toolbar>
 
 
@@ -37,7 +37,7 @@
 
 
             <TextView
-                android:id="@+id/tv_photo_title"
+                android:id="@+id/tv_novel_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/framgent_margin"
@@ -45,11 +45,14 @@
                 android:gravity="center"
                 android:textStyle="bold"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_photo"
+            <TextView
+                android:id="@+id/tv_novel_context"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
 
         </LinearLayout>
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

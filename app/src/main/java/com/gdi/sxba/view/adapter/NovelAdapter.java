@@ -2,21 +2,15 @@ package com.gdi.sxba.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.gdi.sxba.R;
 import com.gdi.sxba.contract.OnItemClickLitener;
-import com.gdi.sxba.model.bean.PhotoBean;
-
+import com.gdi.sxba.model.bean.NovelBean;
 
 import java.util.List;
 
@@ -24,41 +18,30 @@ import java.util.List;
  * Created by Administrator on 2017/8/2 0002.
  */
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.ViewHolder> {
 
-    List<PhotoBean.photoData> sxList;
+    List<NovelBean.NovelData> sxList;
     Context mContext;
     OnItemClickLitener mOnItemClickLitener;
 
-    public PhotoAdapter(Context context, List<PhotoBean.photoData> sxList) {
+    public NovelAdapter(Context context, List<NovelBean.NovelData> sxList) {
         this.mContext = context;
         this.sxList = sxList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_novel, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         if (sxList != null) {
-            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            layoutParams.height = (int) (550 + Math.random() * 200);
-            holder.itemView.setLayoutParams(layoutParams);
 
-            final PhotoBean.photoData data = sxList.get(position);
-            if (data != null) {
-                if (!TextUtils.isEmpty(data.getImg())) {
-//                    Glide.with(mContext).load("http://s6.sinaimg.cn/mw690/001pPXi2gy6W1B9sLE9c5&690").apply(new RequestOptions().centerCrop().diskCacheStrategy(DiskCacheStrategy.NONE)).into(holder.ivImg);
-                    Glide.with(mContext).load(data.getImg())
-                            .transition(new DrawableTransitionOptions().crossFade(500))
-                            .thumbnail(0.3f)
-                            .apply(new RequestOptions().centerCrop()).into(holder.ivImg);
-                }
-                holder.tvTitle.setText(data.getTitle());
-            }
+            NovelBean.NovelData novelData = sxList.get(position);
+            holder.tvClassify.setText(novelData.getClassify());
+            holder.tvTitle.setText(novelData.getTitle());
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,12 +62,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView ivImg;
         TextView tvTitle;
+        TextView tvClassify;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivImg = (ImageView) itemView.findViewById(R.id.iv_img);
+            tvClassify = (TextView) itemView.findViewById(R.id.tv_classify);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         }
     }

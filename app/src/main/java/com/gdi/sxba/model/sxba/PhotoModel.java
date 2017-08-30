@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.gdi.sxba.contract.CrawlerCallback;
 import com.gdi.sxba.contract.UIContract;
-import com.gdi.sxba.model.bean.SxBean;
+import com.gdi.sxba.model.bean.PhotoBean;
 import com.gdi.sxba.model.context.SxContext;
 
 import org.jsoup.Jsoup;
@@ -20,9 +20,9 @@ import java.util.List;
  * Created by gandi on 2017/8/24 0024.
  */
 
-public class SxbaModel implements UIContract.Model {
+public class PhotoModel implements UIContract.Model {
 
-    private static final String TAG = "SxbaModel";
+    private static final String TAG = "PhotoModel";
 
     String url;
     CrawlerCallback callback;
@@ -38,14 +38,12 @@ public class SxbaModel implements UIContract.Model {
             @Override
             public void run() {
                 try {
-                    SxBean sxBean = new SxBean();
-                    List<SxBean.SxData> sxDataList = new ArrayList<>();
+                    PhotoBean photoBean = new PhotoBean();
+                    List<PhotoBean.photoData> photoDataList = new ArrayList<>();
 
-                    String connetUrl = url + page + SxContext.Suffix+"?qqdrsign=03d16";
+                    String connetUrl = url + page + SxContext.Suffix + "?qqdrsign=03d16?qqdrsign=0256d";
                     Log.i(TAG, "run: connetUrl------" + connetUrl);
-//                    JsoupClient jsoupClient = JsoupClient.getInstance("http://s8zhibo.com/forum-158-2.html");
-//                    Document doc = jsoupClient.connect();
-                    Document doc = Jsoup.connect(connetUrl).timeout(10000).get();
+                    Document doc = Jsoup.connect(connetUrl).userAgent(SxContext.userAgent).timeout(10000).get();
                     Elements tbody = doc.select("tbody[id]");
 
                     for (Element element : tbody) {
@@ -59,26 +57,29 @@ public class SxbaModel implements UIContract.Model {
                         if (imgE.size() > 0) {
                             img = imgE.get(0).attr("src");
 
-                            SxBean.SxData sxData = new SxBean.SxData();
-                            sxData.setTitle(title);
-                            sxData.setUrl(url);
-                            sxData.setImg(img);
-                            sxDataList.add(sxData);
-                            Log.i(TAG, "sxData: " + sxData.toString());
+                            PhotoBean.photoData photoData = new PhotoBean.photoData();
+                            photoData.setTitle(title);
+                            photoData.setUrl(url);
+                            photoData.setImg(img);
+                            photoDataList.add(photoData);
+//                            Log.i(TAG, "photoData: " + photoData.toString());
                         }
                     }
                     String allPage = doc.select("a.last").first().text();
                     String[] split = allPage.split(" ");
 
-                    sxBean.setAllpage(split[split.length - 1]);
-                    sxBean.setSxDataList(sxDataList);
-                    Log.i(TAG, "sxBean: " + sxBean.toString());
+                    photoBean.setAllpage(split[split.length - 1]);
+                    photoBean.setphotoDataList(photoDataList);
+                    Log.i(TAG, "photoBean: " + photoBean.toString());
 
-                    if (sxDataList.size() > 0) {
-                        callback.onSuccess(sxBean);
+                    if (photoDataList.size() > 0) {
+                        callback.onSuccess(photoBean);
+                    } else {
+                        callback.onError(CrawlerCallback.ErrorNoSize);
                     }
 
                 } catch (Exception e) {
+                    callback.onError(CrawlerCallback.ErrorException);
                     e.printStackTrace();
                 }
 

@@ -1,224 +1,69 @@
 package com.gdi.sxba.view.fragment;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.flyco.tablayout.SlidingTabLayout;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.gdi.sxba.R;
-import com.gdi.sxba.contract.OnItemClickLitener;
-import com.gdi.sxba.contract.UIContract;
-import com.gdi.sxba.model.bean.SxBean;
-import com.gdi.sxba.presenter.SxPresenter;
-import com.gdi.sxba.view.activity.PhotoActivity;
-import com.gdi.sxba.view.adapter.SxbaAdapter;
-
-import org.greenrobot.eventbus.EventBus;
+import com.gdi.sxba.model.context.SxContext;
+import com.gdi.sxba.view.adapter.TabPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by gandi on 2017/8/21 0021.
+ * Created by gandi on 2017/8/25 0025.
  */
 
-@SuppressLint("ValidFragment")
-public class PhotoFragment extends Fragment implements UIContract.View<SxBean>, OnItemClickLitener {
+public class PhotoFragment extends BaseFragment implements OnTabSelectListener {
 
     private static final String TAG = "PhotoFragment";
 
-    public static PhotoFragment instance;
     View mView;
-    String url;
-    SxPresenter presenter;
-    SxbaAdapter sxAdapter;
-    List<SxBean.SxData> sxList = new ArrayList<>();
 
-    SwipeRefreshLayout swipeRefreshLayout;
-    RecyclerView recyclerView;
-    FloatingActionButton fab;
-
-    // 标志位，标志已经初始化完成。
-    private boolean isPrepared;
-    protected boolean isVisible;
-
-    final int HANDLER_REFRESH_CLOSE = 1;
-    final int HANDLER_CRAWLER_SUCCESS = 2;
-    final int HANDLER_CRAWLER_ERROR = 3;
-
-
-
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case HANDLER_REFRESH_CLOSE:
-                    if (swipeRefreshLayout.isRefreshing())
-                        swipeRefreshLayout.setRefreshing(false);
-                    break;
-                case HANDLER_CRAWLER_SUCCESS:
-                    mHandler.sendEmptyMessage(HANDLER_REFRESH_CLOSE);
-                    if (msg.arg1 == notifyFrist) {
-                        sxAdapter.notifyDataSetChanged();
-                    } else if (msg.arg1 == notifyNext) {
-                        sxAdapter.notifyItemRangeInserted((int) msg.obj, sxList.size() - 1);
-                    }
-
-                    break;
-                case HANDLER_CRAWLER_ERROR:
-                    mHandler.sendEmptyMessage(HANDLER_REFRESH_CLOSE);
-                    break;
-            }
-        }
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
+    private final String[] mTitles = {
+            "生活自拍", "性爱自拍", "街拍",
+            "欧亚套图", "国模套图", "动漫套图",
+            "亚洲性爱", "欧美性爱", "亚洲裸女", "欧美裸女", "裸模艺术",
+            "极致诱惑", "明星专区", "动漫专区"
     };
 
+    private final String[] mUrl = {
+            SxContext.SxBaZipai, SxContext.SxBaZipaiS, SxContext.SxBaJiePai,
+            SxContext.SxBaOuYaT, SxContext.SxBaGuoMoT, SxContext.SxBaDongManT,
+            SxContext.SxBaYaZhou, SxContext.SxBaOuMei, SxContext.SxBaYaZhouL, SxContext.SxBaOuMeiL, SxContext.SxBaLYiShu,
+            SxContext.SxBaYouHuo, SxContext.SxBaMingXing, SxContext.SxBaDongMan
+    };
 
-    public PhotoFragment(String url) {
-        this.url = url;
-        presenter = new SxPresenter(this);
-        presenter.setUrl(url);
-    }
-
-
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "onCreateView: " + url);
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_photo, null);
-            isPrepared = true;
             init();
         }
         return mView;
     }
 
-
-
-    /**
-     * 在这里实现Fragment数据的缓加载.
-     *
-     * @param isVisibleToUser
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        Log.i(TAG, "setUserVisibleHint: " + url + getUserVisibleHint());
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            isVisible = true;
-            init();
-        } else {
-            isVisible = false;
-        }
-    }
-
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (null != mView) {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-        }
-    }
-
     private void init() {
-        if (!isPrepared || !isVisible) {
-            return;
+
+        for (String url : mUrl) {
+            mFragments.add(new PhotoCategoryFragment(url));
         }
 
-        swipeRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.sl_taohua);
-        recyclerView = (RecyclerView) mView.findViewById(R.id.rv_taohua);
-        fab = (FloatingActionButton) mView.findViewById(R.id.fabtn);
+        TabPagerAdapter adapter = new TabPagerAdapter(getFragmentManager(), mFragments, mTitles);
+        ViewPager vp = (ViewPager) mView.findViewById(R.id.vp_photo);
+        vp.setAdapter(adapter);
+        SlidingTabLayout slidingTabLayout = (SlidingTabLayout) mView.findViewById(R.id.stl_photo);
+        slidingTabLayout.setViewPager(vp);
+        slidingTabLayout.setOnTabSelectListener(this);
 
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        sxAdapter = new SxbaAdapter(getActivity(), sxList);
-        recyclerView.setAdapter(sxAdapter);
-        sxAdapter.setOnItemClickLitener(this);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                sxList.clear();
-                presenter.onFristPage();
-                mHandler.sendEmptyMessageDelayed(HANDLER_REFRESH_CLOSE, 6000);
-            }
-        });
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isSlideToBottom(recyclerView)) {
-                    presenter.onNextPage();
-                }
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //回到顶部
-                if (recyclerView != null) {
-                    recyclerView.smoothScrollToPosition(0);
-                }
-            }
-        });
-
-        presenter.onFristPage();
-    }
-
-    /**
-     * 是否滑动到底部
-     *
-     * @param recyclerView
-     * @return
-     */
-    public static boolean isSlideToBottom(RecyclerView recyclerView) {
-        if (recyclerView == null) return false;
-        if (recyclerView.computeVerticalScrollExtent() + recyclerView.computeVerticalScrollOffset() >= recyclerView.computeVerticalScrollRange())
-            return true;
-        return false;
-    }
-
-    @Override
-    public void notifyDataSetChanged(int type, SxBean result) {
-        int positionStart = sxList.size();
-        switch (type) {
-            case notifyFrist:
-                sxList.clear();
-                break;
-            case notifyNext:
-                break;
-            case notifyAppoint:
-                break;
-        }
-
-        sxList.addAll(result.getSxDataList());
-
-        Message msg = new Message();
-        msg.what = HANDLER_CRAWLER_SUCCESS;
-        msg.obj = positionStart;
-        msg.arg1 = type;
-        mHandler.sendMessage(msg);
-    }
-
-    @Override
-    public void onError() {
-        mHandler.sendEmptyMessage(HANDLER_CRAWLER_ERROR);
     }
 
     @Override
@@ -226,11 +71,14 @@ public class PhotoFragment extends Fragment implements UIContract.View<SxBean>, 
 
     }
 
+
     @Override
-    public void setOnItemClickLitener(View view, int position) {
-        EventBus.getDefault().postSticky(sxList.get(position));
-        Intent intent = new Intent(getActivity(), PhotoActivity.class);
-        startActivity(intent);
+    public void onTabSelect(int position) {
+
     }
 
+    @Override
+    public void onTabReselect(int position) {
+
+    }
 }

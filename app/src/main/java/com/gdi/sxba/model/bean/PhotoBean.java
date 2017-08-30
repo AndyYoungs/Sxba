@@ -6,10 +6,10 @@ import java.util.List;
  * Created by gandi on 2017/8/21 0021.
  */
 
-public class SxBean {
+public class PhotoBean {
 
     String allpage;
-    List<SxData> sxDataList;
+    List<photoData> photoDataList;
 
     public String getAllpage() {
         return allpage;
@@ -19,15 +19,15 @@ public class SxBean {
         this.allpage = allpage;
     }
 
-    public List<SxData> getSxDataList() {
-        return sxDataList;
+    public List<photoData> getphotoDataList() {
+        return photoDataList;
     }
 
-    public void setSxDataList(List<SxData> sxDataList) {
-        this.sxDataList = sxDataList;
+    public void setphotoDataList(List<photoData> photoDataList) {
+        this.photoDataList = photoDataList;
     }
 
-    public static class SxData{
+    public static class photoData{
         String title;
         String url;
         String img;
@@ -58,7 +58,7 @@ public class SxBean {
 
         @Override
         public String toString() {
-            return "SxData{" +
+            return "photoData{" +
                     "title='" + title + '\'' +
                     ", url='" + url + '\'' +
                     ", img='" + img + '\'' +
@@ -69,9 +69,9 @@ public class SxBean {
 
     @Override
     public String toString() {
-        return "SxBean{" +
+        return "PhotoBean{" +
                 "allpage='" + allpage + '\'' +
-                ", sxDataList=" + sxDataList +
+                ", photoDataList=" + photoDataList +
                 '}';
     }
 }
